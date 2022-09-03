@@ -32,24 +32,6 @@ Features
 - Customize retrying on expected returned result
 
 
-Installation
-------------
-
-To install retrying, simply:
-
-.. code-block:: bash
-
-    $ pip install retrying
-
-Or, if you absolutely must:
-
-.. code-block:: bash
-
-    $ easy_install retrying
-
-But, you might regret that later.
-
-
 Examples
 ----------
 
