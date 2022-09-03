@@ -1,13 +1,19 @@
-Retrying is written and maintained by Ray Holder and
+Retrying is maintained by Greg Roodt and
 various contributors:
 
-Development Lead
+Lead Maintainer
+````````````````
+
+- Greg Roodt
+
+
+Original Author
 ````````````````
 
 - Ray Holder
 
 
-Patches and Suggestions
+Contributors
 ```````````````````````
 
 - Anthony McClosky

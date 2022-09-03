@@ -2,6 +2,12 @@
 
 History
 -------
+1.3.4 (2022-09-03)
+++++++++++++++++++
+- Added Greg Roodt as maintainer
+- Formatted code with black
+- Updated repository references
+
 1.3.3 (2014-12-14)
 ++++++++++++++++++
 - Add minimum six version of 1.7.0 since anything less will break things

@@ -1,14 +1,5 @@
 Retrying
 =========================
-.. image:: https://img.shields.io/pypi/v/retrying.svg
-    :target: https://pypi.python.org/pypi/retrying
-
-.. image:: https://img.shields.io/travis/rholder/retrying.svg
-    :target: https://travis-ci.org/rholder/retrying
-
-.. image:: https://img.shields.io/pypi/dm/retrying.svg
-    :target: https://pypi.python.org/pypi/retrying
-
 Retrying is an Apache 2.0 licensed general-purpose retrying library, written in
 Python, to simplify the task of adding retry behavior to just about anything.
 
@@ -152,5 +143,5 @@ Contribute
 #. Write a test which shows that the bug was fixed or that the feature works as expected.
 #. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to AUTHORS_.
 
-.. _`the repository`: http://github.com/rholder/retrying
-.. _AUTHORS: https://github.com/rholder/retrying/blob/master/AUTHORS.rst
+.. _`the repository`: http://github.com/groodt/retrying
+.. _AUTHORS: https://github.com/groodt/retrying/blob/master/AUTHORS.rst
