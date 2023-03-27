@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import logging
 import random
 import six
 import sys
@@ -83,6 +83,7 @@ class Retrying(object):
         wait_jitter_max=None,
         before_attempts=None,
         after_attempts=None,
+        logger=None,
     ):
 
         self._stop_max_attempt_number = (
@@ -110,6 +111,7 @@ class Retrying(object):
         self._wait_jitter_max = 0 if wait_jitter_max is None else wait_jitter_max
         self._before_attempts = before_attempts
         self._after_attempts = after_attempts
+        self._logger = logging.getLogger(__name__) if logger is None else logger
 
         # TODO add chaining of stop behaviors
         # stop behavior
@@ -256,6 +258,7 @@ class Retrying(object):
             if not self.should_reject(attempt):
                 return attempt.get(self._wrap_exception)
 
+            self._logger.warn(attempt)
             if self._after_attempts:
                 self._after_attempts(attempt_number)
 
@@ -268,6 +271,7 @@ class Retrying(object):
                     raise RetryError(attempt)
             else:
                 sleep = self.wait(attempt_number, delay_since_first_attempt_ms)
+                self._logger.info(f"Retrying in {sleep / 1000.0:.2f} seconds.")
                 if self._wait_jitter_max:
                     jitter = random.random() * self._wait_jitter_max
                     sleep = sleep + max(0, jitter)
