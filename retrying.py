@@ -13,11 +13,10 @@
 # limitations under the License.
 
 import random
-import six
 import sys
 import time
 import traceback
-
+from functools import wraps
 
 # sys.maxint / 2, since Python 3.2 doesn't have a sys.maxint...
 MAX_WAIT = 1073741823
@@ -40,7 +39,7 @@ def retry(*dargs, **dkw):
     if len(dargs) == 1 and callable(dargs[0]):
 
         def wrap_simple(f):
-            @six.wraps(f)
+            @wraps(f)
             def wrapped_f(*args, **kw):
                 return Retrying().call(f, *args, **kw)
 
@@ -51,7 +50,7 @@ def retry(*dargs, **dkw):
     else:
 
         def wrap(f):
-            @six.wraps(f)
+            @wraps(f)
             def wrapped_f(*args, **kw):
                 return Retrying(*dargs, **dkw).call(f, *args, **kw)
 
@@ -298,7 +297,7 @@ class Attempt(object):
             if wrap_exception:
                 raise RetryError(self)
             else:
-                six.reraise(self.value[0], self.value[1], self.value[2])
+                raise self.value
         else:
             return self.value
 
