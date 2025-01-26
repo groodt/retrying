@@ -111,7 +111,14 @@ class Retrying(object):
         self._wait_jitter_max = 0 if wait_jitter_max is None else wait_jitter_max
         self._before_attempts = before_attempts
         self._after_attempts = after_attempts
-        self._logger = logging.getLogger(__name__) if logger is None else logger
+        
+        if logger in (True, None):
+            self._logger = logging.getLogger(__name__)
+            if logger is None:
+                self._logger.addHandler(logging.NullHandler()) 
+                self._logger.propagate = False
+        elif logger:
+           self._logger = logger
 
         # TODO add chaining of stop behaviors
         # stop behavior
@@ -271,10 +278,10 @@ class Retrying(object):
                     raise RetryError(attempt)
             else:
                 sleep = self.wait(attempt_number, delay_since_first_attempt_ms)
-                self._logger.info(f"Retrying in {sleep / 1000.0:.2f} seconds.")
                 if self._wait_jitter_max:
                     jitter = random.random() * self._wait_jitter_max
                     sleep = sleep + max(0, jitter)
+                self._logger.info(f"Retrying in {sleep / 1000.0:.2f} seconds.")
                 time.sleep(sleep / 1000.0)
 
             attempt_number += 1
