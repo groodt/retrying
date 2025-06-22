@@ -26,12 +26,9 @@ with open("README.rst") as file_readme:
 with open("HISTORY.rst") as file_history:
     history = file_history.read()
 
-with open("requirements.txt") as file_requirements:
-    requirements = file_requirements.read().splitlines()
-
 setup(
     name="retrying",
-    version="1.3.4",
+    version="1.3.5-dev",
     description="Retrying",
     long_description=readme + "\n\n" + history,
     author="Greg Roodt",
@@ -41,5 +38,4 @@ setup(
     keywords="decorator decorators retry retrying exception exponential backoff",
     py_modules=["retrying"],
     test_suite="test_retrying",
-    install_requires=requirements,
 )
