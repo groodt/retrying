@@ -5,3 +5,4 @@ dist
 *.pyc
 *.egg-info
 build
+.DS_Store
