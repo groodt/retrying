@@ -2,6 +2,13 @@
 
 History
 -------
+1.3.5 (2025-06-22)
+++++++++++++++++++
+- Remove six dependency
+- Add basic logging support
+- Fix tests and add GHA
+- Accept Exception type for retry_on_exception
+
 1.3.4 (2022-09-03)
 ++++++++++++++++++
 - Added Greg Roodt as maintainer
