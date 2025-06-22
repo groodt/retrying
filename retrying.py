@@ -297,7 +297,8 @@ class Attempt(object):
             if wrap_exception:
                 raise RetryError(self)
             else:
-                raise self.value
+                exc_type, exc, tb = self.value
+                raise exc.with_traceback(tb)
         else:
             return self.value
 
