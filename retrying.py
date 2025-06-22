@@ -166,7 +166,7 @@ class Retrying(object):
             # this allows for providing a tuple of exception types that
             # should be allowed to retry on, and avoids having to create
             # a callback that does the same thing
-            if isinstance(retry_on_exception, (tuple)):
+            if isinstance(retry_on_exception, (tuple, Exception)):
                 retry_on_exception = _retry_if_exception_of_type(retry_on_exception)
             self._retry_on_exception = retry_on_exception
 
