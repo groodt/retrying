@@ -31,7 +31,7 @@ with open("HISTORY.rst") as file_history:
 
 setup(
     name="retrying",
-    version="1.4.0",
+    version="1.4.1-dev",
     description="Retrying",
     long_description=readme + "\n\n" + history,
     author="Greg Roodt",
