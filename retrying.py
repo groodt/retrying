@@ -264,7 +264,7 @@ class Retrying(object):
             if not self.should_reject(attempt):
                 return attempt.get(self._wrap_exception)
 
-            self._logger.warn(attempt)
+            self._logger.warning(attempt)
             if self._after_attempts:
                 self._after_attempts(attempt_number)
 
