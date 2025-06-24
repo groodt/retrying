@@ -280,7 +280,7 @@ class Retrying(object):
                 if self._wait_jitter_max:
                     jitter = random.random() * self._wait_jitter_max
                     sleep = sleep + max(0, jitter)
-                self._logger.info("Retrying in {0:.2f} seconds.".format(sleep / 1000.0))
+                self._logger.info(f"Retrying in {sleep / 1000.0:.2f} seconds.")
                 time.sleep(sleep / 1000.0)
 
             attempt_number += 1
@@ -315,11 +315,9 @@ class Attempt(object):
 
     def __repr__(self):
         if self.has_exception:
-            return "Attempts: {0}, Error:\n{1}".format(
-                self.attempt_number, "".join(traceback.format_tb(self.value[2]))
-            )
+            return f"Attempts: {self.attempt_number}, Error:\n{''.join(traceback.format_tb(self.value[2]))}"
         else:
-            return "Attempts: {0}, Value: {1}".format(self.attempt_number, self.value)
+            return f"Attempts: {self.attempt_number}, Value: {self.value}"
 
 
 class RetryError(Exception):
@@ -331,4 +329,4 @@ class RetryError(Exception):
         self.last_attempt = last_attempt
 
     def __str__(self):
-        return "RetryError[{0}]".format(self.last_attempt)
+        return f"RetryError[{self.last_attempt}]"
