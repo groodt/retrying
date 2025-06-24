@@ -231,7 +231,7 @@ def retry_if_result_none(result):
 
 def retry_if_exception_of_type(retryable_types):
     def retry_if_exception_these_types(exception):
-        print("Detected Exception of type: {0}".format(str(type(exception))))
+        print(f"Detected Exception of type: {str(type(exception))}")
         return isinstance(exception, retryable_types)
 
     return retry_if_exception_these_types
