@@ -280,7 +280,7 @@ class Retrying(object):
                 if self._wait_jitter_max:
                     jitter = random.random() * self._wait_jitter_max
                     sleep = sleep + max(0, jitter)
-                self._logger.info(f"Retrying in {sleep / 1000.0:.2f} seconds.")
+                self._logger.info("Retrying in {0:.2f} seconds.".format(sleep / 1000.0))
                 time.sleep(sleep / 1000.0)
 
             attempt_number += 1
