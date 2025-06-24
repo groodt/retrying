@@ -31,7 +31,7 @@ with open("HISTORY.rst") as file_history:
 
 setup(
     name="retrying",
-    version="1.3.6",
+    version="1.4.0",
     description="Retrying",
     long_description=readme + "\n\n" + history,
     author="Greg Roodt",
@@ -41,4 +41,5 @@ setup(
     keywords="decorator decorators retry retrying exception exponential backoff",
     py_modules=["retrying"],
     test_suite="test_retrying",
+    python_requires=">=3.6",
 )

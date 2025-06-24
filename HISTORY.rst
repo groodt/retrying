@@ -2,6 +2,12 @@
 
 History
 -------
+1.4.0 (2025-06-24)
+++++++++++++++++++
+- Require Python 3.6+
+1.3.6 (2025-06-24)
+++++++++++++++++++
+- Restore Python 2 compatibility
 1.3.5 (2025-06-22)
 ++++++++++++++++++
 - Remove six dependency
