@@ -309,7 +309,11 @@ class Attempt(object):
                 raise RetryError(self)
             else:
                 exc_type, exc, tb = self.value
-                raise exc.with_traceback(tb)
+                try:
+                    raise exc.with_traceback(tb)
+                except AttributeError:
+                    # Python 2 compatibility
+                    exec("raise exc_type, exc, tb")
         else:
             return self.value
 
