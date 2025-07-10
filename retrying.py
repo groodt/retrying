@@ -58,6 +58,26 @@ def retry(*dargs, **dkw):
 
         return wrap
 
+_default_logger = None
+_configured_null_logger = False
+
+def _pick_logger(logger=None):
+    # Factor this logic out into a smaller function so that `global` only needs to be here,
+    # not the large __init__ function.
+    global _default_logger, _configured_null_logger
+
+    if logger in (True, None):
+        if _default_logger is None:
+            _default_logger = logging.getLogger(__name__)
+        # Only add the null handler once, not every time we get the logger
+        if logger is None and not _configured_null_logger:
+            _configured_null_logger = True
+            _default_logger.addHandler(logging.NullHandler())
+            _default_logger.propagate = False
+        return _default_logger
+    else:  # Not None (and not True) -> must have supplied a logger. Just use that.
+        return logger
+
 
 class Retrying(object):
     def __init__(
@@ -110,14 +130,8 @@ class Retrying(object):
         self._wait_jitter_max = 0 if wait_jitter_max is None else wait_jitter_max
         self._before_attempts = before_attempts
         self._after_attempts = after_attempts
-        
-        if logger in (True, None):
-            self._logger = logging.getLogger(__name__)
-            if logger is None:
-                self._logger.addHandler(logging.NullHandler()) 
-                self._logger.propagate = False
-        elif logger:
-           self._logger = logger
+
+        self._logger = _pick_logger(logger)
 
         # TODO add chaining of stop behaviors
         # stop behavior
