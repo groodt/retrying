@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import logging
+import random
 import time
 import unittest
 
@@ -461,7 +462,7 @@ class TestBeforeAfterAttempts(unittest.TestCase):
 
         _test_before()
 
-        self.assertTrue(TestBeforeAfterAttempts._attempt_number is 1)
+        self.assertTrue(TestBeforeAfterAttempts._attempt_number == 1)
 
     def test_after_attempts(self):
         TestBeforeAfterAttempts._attempt_number = 0
@@ -478,7 +479,111 @@ class TestBeforeAfterAttempts(unittest.TestCase):
 
         _test_after()
 
-        self.assertTrue(TestBeforeAfterAttempts._attempt_number is 2)
+        self.assertTrue(TestBeforeAfterAttempts._attempt_number == 2)
+
+
+class LoadTest(unittest.TestCase):
+    total_calls = 0
+    foo = "bar"  # Static value to reduce variance
+
+    @retry(
+        retry_on_result=lambda result: result is None,
+        stop_max_attempt_number=30000,  # For this test, never raise an exception
+        wait_fixed=0
+    )
+    def fn_to_test(self):
+        LoadTest.total_calls += 1
+        # Simulate sometimes returning None (triggering retry)
+        if random.random() < 0.4:
+            return LoadTest.foo
+        else:
+            return None
+
+    def benchmark(self, duration_seconds=2):
+        # Reset counter
+        LoadTest.total_calls = 0
+
+        start_time = time.time()
+        end_time = start_time + duration_seconds
+
+        while time.time() < end_time:
+            _ = self.fn_to_test()
+
+        actual_duration = time.time() - start_time
+
+        # Calculate metrics
+        calls_per_second = LoadTest.total_calls / actual_duration
+        return calls_per_second
+
+    def test_load(self):
+        """
+        In 1.3.5, there was a bug where calls wrapped with retry would take longer and longer to complete.
+        This test checks that wrapping a function with retry doesn't affect its performance over several calls.
+        This test takes ~24 seconds to run.
+        """
+        calls_per_second_initial = self.benchmark(2)
+        # Run the benchmark a few more times. This triggers the performance bug in 1.3.5.
+        for i in range(10):
+            _ = self.benchmark(2)
+        calls_per_second_final = self.benchmark(2)
+        # Ensure that the later calls are within +/-20% the speed of the initial calls
+        self.assertTrue(
+            calls_per_second_initial * 0.8 <= calls_per_second_final <= calls_per_second_initial * 1.2,
+            {
+                "calls_per_second_initial": calls_per_second_initial,
+                "calls_per_second_final": calls_per_second_final,
+                "msg": "calls_per_second_final was not within +/-20% of calls_per_second_initial"
+            }
+        )
+
+
+class TestLogger(unittest.TestCase):
+    def setUp(self):
+        # Set up a function with a dummy logger
+        self.logger = logging.getLogger("test_retrying")
+        self.test_handler = self.TestHandler()
+        self.logger.addHandler(self.test_handler)
+        @retry(stop_max_attempt_number=1, retry_on_result=lambda r: r is None, logger=self.logger)
+        def foo_with_logger():
+            return None
+        self.foo_with_logger = foo_with_logger
+
+    class TestHandler(logging.Handler):
+        def __init__(self):
+            super().__init__()
+            self.records = []
+
+        def handle(self, record):
+            self.records.append(record)
+
+    @retry(stop_max_attempt_number=1, retry_on_result=lambda r: r is None)
+    def foo_no_logger(self):
+        return None
+
+    def test_logger_None(self):
+        # Assert not raises (anything except RetryError)
+        try:
+            self.foo_no_logger()
+        except RetryError:
+            pass
+
+    def test_logger_custom(self):
+        try:
+            self.foo_with_logger()
+        except RetryError:
+            pass
+        self.assertEqual(len(self.test_handler.records), 1)
+
+    def test_logger_true(self):
+        @retry(stop_max_attempt_number=1, retry_on_result=lambda r: r is None, logger=True)
+        def foo_true():
+            return None
+
+        # Assert not raises (anything except RetryError)
+        try:
+            foo_true()
+        except RetryError:
+            pass
 
 
 if __name__ == "__main__":
