@@ -2,6 +2,11 @@
 
 History
 -------
+1.4.1 (2025-07-19)
+++++++++++++++++++
+- Fix performance regression
+- Add GHA for publishing to PyPI with a Trusted Publisher
+
 1.4.0 (2025-06-24)
 ++++++++++++++++++
 - Require Python 3.6+
