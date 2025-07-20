@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "retrying"
+version = "1.4.2-dev"
+description = "Retrying"
+authors = [
+    {name = "Greg Roodt"},
+]
+license = "Apache-2.0"
+readme = "README.rst"
+requires-python = ">=3.6"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Internet",
+    "Topic :: Utilities",
+]
+keywords = ["decorator", "decorators", "retry", "retrying", "exception", "exponential", "backoff"]
+
+[project.urls]
+Homepage = "https://github.com/groodt/retrying"
+Repository = "https://github.com/groodt/retrying"
+
+[tool.setuptools]
+py-modules = ["retrying"]
