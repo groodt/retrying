@@ -10,7 +10,7 @@ authors = [
     {name = "Greg Roodt"},
 ]
 license = "Apache-2.0"
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.6"
 classifiers = [
     "Intended Audience :: Developers",
