@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "retrying"
-version = "1.4.2-dev"
+version = "1.4.2"
 description = "Retrying"
 authors = [
     {name = "Alex Kuang"},
