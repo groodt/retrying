@@ -263,7 +263,7 @@ class Retrying(object):
         return reject
 
     def call(self, fn, *args, **kwargs):
-        start_time = int(round(time.time() * 1000))
+        start_time = int(round(time.monotonic() * 1000))
         attempt_number = 1
         while True:
             if self._before_attempts:
@@ -282,7 +282,7 @@ class Retrying(object):
             if self._after_attempts:
                 self._after_attempts(attempt_number)
 
-            delay_since_first_attempt_ms = int(round(time.time() * 1000)) - start_time
+            delay_since_first_attempt_ms = int(round(time.monotonic() * 1000)) - start_time
             if self.stop(attempt_number, delay_since_first_attempt_ms):
                 if not self._wrap_exception and attempt.has_exception:
                     # get() on an attempt with an exception should cause it to be raised, but raise just in case
