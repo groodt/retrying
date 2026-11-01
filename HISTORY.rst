@@ -2,6 +2,12 @@
 
 History
 -------
+
+Unreleased
+++++++++++
+
+- Measure elapsed retry delays with the monotonic clock to withstand wall-clock adjustments.
+
 1.4.1 (2025-07-19)
 ++++++++++++++++++
 - Fix performance regression

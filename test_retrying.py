@@ -15,6 +15,7 @@ import logging
 import random
 import time
 import unittest
+from unittest.mock import patch
 
 from retrying import RetryError
 from retrying import Retrying
@@ -584,6 +585,32 @@ class TestLogger(unittest.TestCase):
             foo_true()
         except RetryError:
             pass
+
+
+class TestMonotonicClock(unittest.TestCase):
+    def check_wall_clock_change(self, direction):
+        attempts = []
+        with patch('retrying.time.time', return_value=1000.0) as wall_clock:
+            with patch('retrying.time.monotonic', side_effect=lambda: 10 + len(attempts) * 0.01):
+                with patch('retrying.time.sleep'):
+                    controller = Retrying(stop_max_attempt_number=3, stop_max_delay=20,
+                                          retry_on_result=lambda value: value is None)
+
+                    def target():
+                        attempts.append(None)
+                        wall_clock.return_value += direction * 1000
+                        return None
+
+                    with self.assertRaises(RetryError) as error:
+                        controller.call(target)
+        self.assertEqual(len(attempts), 2)
+        self.assertEqual(error.exception.last_attempt.attempt_number, 2)
+
+    def test_backward_wall_clock_change_does_not_extend_deadline(self):
+        self.check_wall_clock_change(-1)
+
+    def test_forward_wall_clock_change_does_not_end_retries_early(self):
+        self.check_wall_clock_change(1)
 
 
 if __name__ == "__main__":
