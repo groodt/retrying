@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+import math
 import random
 import sys
 import time
@@ -237,8 +238,16 @@ class Retrying(object):
         return result
 
     def exponential_sleep(self, previous_attempt_number, delay_since_first_attempt_ms):
-        exp = 2**previous_attempt_number
-        result = self._wait_exponential_multiplier * exp
+        multiplier = self._wait_exponential_multiplier
+        if multiplier <= 0:
+            return 0
+        if isinstance(multiplier, float):
+            try:
+                result = math.ldexp(multiplier, previous_attempt_number)
+            except OverflowError:
+                result = self._wait_exponential_max
+        else:
+            result = multiplier * 2**previous_attempt_number
         if result > self._wait_exponential_max:
             result = self._wait_exponential_max
         if result < 0:

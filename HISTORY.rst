@@ -2,6 +2,12 @@
 
 History
 -------
+
+Unreleased
+++++++++++
+
+- Keep floating-point exponential waits finite and capped at large attempt numbers.
+
 1.4.1 (2025-07-19)
 ++++++++++++++++++
 - Fix performance regression
