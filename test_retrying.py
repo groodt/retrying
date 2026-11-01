@@ -122,6 +122,23 @@ class TestWaitConditions(unittest.TestCase):
         self.assertEqual(r.wait(7, 0), 50000)
         self.assertEqual(r.wait(50, 0), 50000)
 
+    def test_float_exponential_wait_remains_capped_after_overflow(self):
+        retrying = Retrying(wait_exponential_multiplier=0.5, wait_exponential_max=40)
+        self.assertEqual(retrying.wait(1024, 0), 40)
+        self.assertEqual(retrying.wait(2000, 0), 40)
+
+    def test_zero_float_exponential_multiplier_does_not_overflow(self):
+        retrying = Retrying(wait_exponential_multiplier=0.0, wait_exponential_max=40)
+        self.assertEqual(retrying.wait(1024, 0), 0)
+
+    def test_negative_float_exponential_multiplier_remains_zero(self):
+        retrying = Retrying(wait_exponential_multiplier=-0.5, wait_exponential_max=40)
+        self.assertEqual(retrying.wait(1024, 0), 0)
+
+    def test_exponential_wait_avoids_intermediate_float_overflow(self):
+        retrying = Retrying(wait_exponential_multiplier=0.5, wait_exponential_max=1e308)
+        self.assertEqual(retrying.wait(1024, 0), float(2**1023))
+
     def test_legacy_explicit_wait_type(self):
         Retrying(wait="exponential_sleep")
 
