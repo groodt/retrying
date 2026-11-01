@@ -94,6 +94,11 @@ def only_raise_retry_error_when_not_io_error():
     print("Retry forever with no wait if an IOError occurs, raise any other errors wrapped in RetryError")
 ```
 
+A single exception class or tuple of classes can also be passed directly, for
+example `@retry(retry_on_exception=OSError)` or
+`@retry(retry_on_exception=(OSError, ValueError))`. Other exception types are
+raised immediately.
+
 We can also use the result of the function to alter the behavior of retrying.
 
 ```python
