@@ -21,6 +21,65 @@ from retrying import Retrying
 from retrying import retry
 
 
+class TestExceptionClassFilter(unittest.TestCase):
+    def test_exception_class_retries_matching_subclasses(self):
+        calls = []
+
+        @retry(retry_on_exception=OSError, stop_max_attempt_number=2)
+        def operation():
+            calls.append(None)
+            if len(calls) == 1:
+                raise FileNotFoundError("retry me")
+            return "ready"
+
+        self.assertEqual(operation(), "ready")
+        self.assertEqual(len(calls), 2)
+
+    def test_exception_class_propagates_other_exceptions(self):
+        error = ValueError("do not retry")
+        calls = []
+
+        @retry(retry_on_exception=OSError, stop_max_attempt_number=2)
+        def operation():
+            calls.append(None)
+            raise error
+
+        with self.assertRaises(ValueError) as caught:
+            operation()
+        self.assertIs(caught.exception, error)
+        self.assertEqual(len(calls), 1)
+
+    def test_exception_class_exhaustion_can_be_wrapped(self):
+        error = OSError("not ready")
+
+        @retry(retry_on_exception=OSError, stop_max_attempt_number=2,
+               wrap_exception=True)
+        def operation():
+            raise error
+
+        with self.assertRaises(RetryError) as caught:
+            operation()
+        self.assertEqual(caught.exception.last_attempt.attempt_number, 2)
+        self.assertIs(caught.exception.last_attempt.value[1], error)
+
+    def test_callable_object_filter_still_works(self):
+        class Filter:
+            def __call__(self, exception):
+                return isinstance(exception, OSError)
+
+        calls = []
+
+        @retry(retry_on_exception=Filter(), stop_max_attempt_number=2)
+        def operation():
+            calls.append(None)
+            if len(calls) == 1:
+                raise OSError("retry me")
+            return "ready"
+
+        self.assertEqual(operation(), "ready")
+        self.assertEqual(len(calls), 2)
+
+
 class TestStopConditions(unittest.TestCase):
     def test_never_stop(self):
         r = Retrying()
